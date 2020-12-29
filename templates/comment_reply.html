@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div>
+                <h3>Reply to</h3>
+                <div id="{{ comment.id }}" >
+                    <div>{{ comment.content }}</div>
+                    <div class="d-flex justify-content-between">By {{ comment.author }} on {{ comment.publish }}</div>
+                    <hr />
+                </div>
+            </div>
+
+            <form name="sentMessage" id="contactForm" method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit">Reply</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

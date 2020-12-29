@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            {% if user.pk == current_profile.pk %}
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <h2 class="post-title">
+                        <a href="{% url 'posts:new-post' %}">
+                            Create post
+                        </a>
+                    </h2>
+                    <hr>
+                </div>
+
+            {% endif %}
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h2 class="post-title">Published posts</h2>
+                <hr>
+                {% if published_posts %}
+                    {% for post in published_posts %}
+                        <div class="post-preview">
+                            <a href="{{ post.get_absolute_url }}">
+                                <h2 class="post-title">
+                                    {{ post.title }}
+                                </h2>
+                                <h3 class="post-subtitle">
+                                    {{ post.body|truncatewords:30|linebreaks }}
+                                </h3>
+                            </a>
+                            <p class="post-meta">Posted by
+                                {{ post.author }}
+                                on {{ post.publish }}
+                                {% if user.pk == current_profile.pk %}
+                                    <a href="{% url 'posts:post-update' slug=post.slug %}">Edit</a>
+                                    <a href="{% url 'posts:post-delete' slug=post.slug %}">Delete</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                    {% endfor %}
+                {% else %}
+                    {% if user.pk == current_profile.pk %}
+                        <h3 class="post-subtitle">
+                            Just login or sign up or make your first post!
+                        </h3>
+                    {% else %}
+                        <h3 class="post-subtitle">
+                            This user hasn't made a single post yet(
+                        </h3>
+                    {% endif %}
+                    <hr>
+                {% endif %}
+            </div>
+            {% if user.pk == current_profile.pk %}
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <h2 class="post-title">Draft posts</h2>
+                    <hr>
+                    {% if draft_posts %}
+                        {% for post in draft_posts %}
+                            <div class="post-preview">
+                                <a href="{{ post.get_absolute_url }}">
+                                    <h2 class="post-title">
+                                        {{ post.title }}
+                                    </h2>
+                                    <h3 class="post-subtitle">
+                                        {{ post.body|truncatewords:30|linebreaks }}
+                                    </h3>
+                                </a>
+                                <p class="post-meta">Posted by
+                                    {{ post.author }}
+                                    on {{ post.publish }}
+                                    <a href="{% url 'posts:post-update' slug=post.slug %}">Edit</a>
+                                    <a href="{% url 'posts:post-delete' slug=post.slug %}">Delete</a>
+                                </p>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        <div class="post-preview">
+                            <h3 class="post-title">
+                                Wow, such empty!
+                            </h3>
+                            <h3 class="post-subtitle">
+                                Just login or sign up or make your first post!
+                            </h3>
+                        </div>
+                        <hr>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

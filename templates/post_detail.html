@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="post-preview">
+                        <div>
+                            <h2>{{ post.title }}</h2>
+                            <p class="date">
+                                Published {{ post.publish }} by {{ post.author }}
+                            </p>
+                            <p>
+                                {{ post.body }}
+                            </p>
+                            <hr/>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        {% load mptt_tags %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="post-preview">
+                        <div>
+                            <h3>Comments</h3>
+                            {% recursetree all_comments %}
+                                <li style="list-style-type: none;">
+                                    <ul>
+                                        <div id="{{ node.id }}" class="children">
+                                            <div>{{ node.content }}</div>
+                                            {% if node.author == user %}
+                                                <a href="{% url 'posts:comment-update' post=post.slug pk=node.pk %}">Edit</a>
+                                                <a href="{% url 'posts:comment-delete' post=post.slug pk=node.pk %}">Delete</a>
+                                            {% endif %}
+                                            <div class="d-flex justify-content-between">By {{ node.author }}
+                                                on {{ node.publish }}</div>
+                                            <hr/>
+                                            {% if request.user.pk == node.author.pk or  request.user.pk != None%}
+                                                <a href="{% url 'posts:comment-reply' post=post.slug pk=node.pk %}"> Reply</a>
+                                            {% endif %}
+                                            <hr/>
+                                        </div>
+                                    </ul>
+                                    {% if not node.is_leaf_node %}
+                                        <li style="list-style-type: none;">
+                                            <ul>
+                                                <div class="children">
+                                                    {{ children }}
+                                                </div>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                </li>
+                            {% endrecursetree %}
+
+                        </div>
+                        <div style="display:block;">
+                            <form name="sentMessage" id="contactForm" method="post">
+                                <h2>Create new comment</h2>
+                                {% csrf_token %}
+                                {{ comment_form.as_p }}
+                                <button type="submit">Reply</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
